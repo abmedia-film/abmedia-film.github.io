@@ -158,14 +158,14 @@ document.addEventListener("click", e => {
   const f = e.target.closest("[data-format]"); if (f) { fmt = f.dataset.format; $("#f-format").value = fmt; }
 });
 
-/* ---------- offer bar: the bonus holds for a few minutes from the first visit ---------- */
+/* ---------- offer bar: always on show; the countdown starts over when it runs out ---------- */
 (function () {
   const bar = $("#bar"), tm = $("#timer"), total = D.offer_minutes * 60;
   let start = +store.get("abm-offer", true); if (!start) { start = Date.now(); store.set("abm-offer", String(start), true); }
+  bar.hidden = false; document.body.classList.add("has-bar");
   const step = () => {
-    const left = total - Math.floor((Date.now() - start) / 1000);
-    if (left <= 0) { bar.hidden = true; document.body.classList.remove("has-bar"); return; }
-    bar.hidden = false; document.body.classList.add("has-bar");
+    let left = total - Math.floor((Date.now() - start) / 1000);
+    if (left <= 0) { start = Date.now(); store.set("abm-offer", String(start), true); left = total; }
     tm.textContent = String(Math.floor(left / 60)).padStart(2, "0") + ":" + String(left % 60).padStart(2, "0");
     setTimeout(step, 1000);
   };
