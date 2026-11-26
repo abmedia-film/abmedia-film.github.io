@@ -19,7 +19,7 @@ function make(lang, root) {
   const nn = i => String(i + 1).padStart(2, "0");
   let count = 0;
   /* the page follows the golden circle: Why (0), then How (1), then What (2); the last three sections are the action */
-  const CH = { hero: 0, problems: 0, diff: 0, calc: 0, fix: 1, how: 1, why: 1, work: 2, formats: 2 };
+  const CH = { problems: 0, diff: 0, calc: 0, fix: 1, how: 1, why: 1, work: 2, formats: 2 };
   /* top: the first section; its small label is the page's h1 (it names the service), the big line is a paragraph */
   function sec(id, shape, side, eb, h, body, wide, top) {
     count++;
@@ -36,7 +36,7 @@ function make(lang, root) {
 <div class="cta-row rv">${cta}<a class="btn btn-line" href="#work">${esc(t.cta2)}</a></div>
 <p class="badge rv"><span class="rec"></span>${esc(t.badge)}</p>
 <a class="chip rv" href="work/${f.video}/" data-play="${esc(f.client)}"><span class="chip-p" aria-hidden="true">▶</span><span><small>${esc(t.now)}</small>${esc(f.client)} · ${f.dur}</span></a>
-<ol class="gc rv">${t.gc.map((x, i) => `<li><a href="${["#problems", "#fix", "#work"][i]}"><b class="mono">${esc(t.ch[i])}</b><span>${esc(x)}</span></a></li>`).join("")}</ol>`, "", true);
+<ol class="gc rv">${t.gc.map((x, i) => `<li><a href="${["#problems", "#fix", "#work"][i]}"><b class="mono" aria-hidden="true">↓</b><span>${esc(x)}</span></a></li>`).join("")}</ol>`, "", true);
 
   const diff = sec("diff", "chart", "right", t.d_eb, t.h_diff, `<p class="lead rv">${esc(t.diff_p)}</p>`, `
 <div class="cmp">
