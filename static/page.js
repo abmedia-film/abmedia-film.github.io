@@ -18,12 +18,15 @@ function make(lang, root) {
   const list = (items, cls) => `<ul class="${cls}">${items.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
   const nn = i => String(i + 1).padStart(2, "0");
   let count = 0;
+  /* the page follows the golden circle: Why (0), then How (1), then What (2); the last three sections are the action */
+  const CH = { hero: 0, problems: 0, diff: 0, calc: 0, fix: 1, how: 1, why: 1, work: 2, formats: 2 };
   /* top: the first section; its small label is the page's h1 (it names the service), the big line is a paragraph */
   function sec(id, shape, side, eb, h, body, wide, top) {
     count++;
+    const ch = id in CH ? `<b class="ch">${esc(t.ch[CH[id]])}</b>` : "";
     return `<section class="s s-${id}" id="${id}" data-shape="${shape}" data-side="${side}" data-eb="${esc(eb)}">
 <div class="wrap"><div class="head"><div class="head-t">
-<div class="eb rv"><span>${nn(count - 1)}</span><i></i>${top ? `<h1>${esc(eb)}</h1>` : `<span>${esc(eb)}</span>`}</div>
+<div class="eb rv"><span>${nn(count - 1)}</span><i></i>${ch}${top ? `<h1>${esc(eb)}</h1>` : `<span>${esc(eb)}</span>`}</div>
 <${top ? "p" : "h2"} class="h rv">${mark(h)}</${top ? "p" : "h2"}>${body || ""}</div></div>${wide ? `<div class="wide">${wide}</div>` : ""}</div></section>`;
   }
 
@@ -33,15 +36,15 @@ function make(lang, root) {
 <div class="cta-row rv">${cta}<a class="btn btn-line" href="#work">${esc(t.cta2)}</a></div>
 <p class="badge rv"><span class="rec"></span>${esc(t.badge)}</p>
 <a class="chip rv" href="work/${f.video}/" data-play="${esc(f.client)}"><span class="chip-p" aria-hidden="true">▶</span><span><small>${esc(t.now)}</small>${esc(f.client)} · ${f.dur}</span></a>
-<dl class="stats rv">${t.stats.map(s => `<div><dt>${esc(s[1])}</dt><dd>${esc(s[0])}</dd></div>`).join("")}</dl>`, "", true);
+<ol class="gc rv">${t.gc.map((x, i) => `<li><a href="${["#problems", "#fix", "#work"][i]}"><b class="mono">${esc(t.ch[i])}</b><span>${esc(x)}</span></a></li>`).join("")}</ol>`, "", true);
 
-  const diff = sec("diff", "chart", "left", t.d_eb, t.h_diff, `<p class="lead rv">${esc(t.diff_p)}</p>`, `
+  const diff = sec("diff", "chart", "right", t.d_eb, t.h_diff, `<p class="lead rv">${esc(t.diff_p)}</p>`, `
 <div class="cmp">
 <article class="card rv"><p class="mono tag">${esc(t.ad_tag)}</p><h3>${esc(t.d_ad)}</h3>${list(t.ad_pts, "ul-x")}</article>
 <article class="card card-acc rv"><p class="mono tag acc">${esc(t.film_tag)}</p><h3>${esc(t.d_film)}</h3>${list(t.film_pts, "ul-v")}</article>
 </div>`);
 
-  const calcS = sec("calc", "funnel", "right", t.calc_h, t.h_calc, `
+  const calcS = sec("calc", "funnel", "left", t.calc_h, t.h_calc, `
 <p class="lead rv">${esc(t.calc_p)}</p>
 <div class="calc rv">
 <div class="calc-top"><label class="mono" for="reach">${esc(t.c_reach)}</label><output id="reach-o" for="reach"></output></div>
@@ -71,13 +74,13 @@ ${t.fixes.map((x, i) => `<div class="fx rv"><span class="mono">${nn(i)}</span><s
 
   /* each film is a link to its own page; with scripts on, a click opens the player instead */
   const names = D.order.map(n => `<span>${esc(n)}</span>`).join("");
-  const work = sec("work", "play", "right", t.cs_eb, t.h_work, "", `
+  const work = sec("work", "play", "left", t.cs_eb, t.h_work, "", `
 <p class="mono tr-eb rv">${esc(t.tr_eb)}</p>
 <div class="marq rv" aria-hidden="true"><div>${names}${names}</div></div>
 <div class="films">${D.order.map(n => { const k = CASE[n]; return `<a class="film rv" href="work/${k.video}/" data-play="${esc(n)}">${pic(k.video, t.alt_still.replace("{c}", n), 1280, 714)}<span class="film-p" aria-hidden="true">▶</span><span class="film-m"><b>${esc(n)}</b><small class="mono">${esc(t.cat[n])} · ${k.dur}</small></span></a>`; }).join("")}</div>
 <div class="cta-row rv">${cta}</div>`);
 
-  const why = sec("why", "camera", "left", t.why_eb, t.h_why, `
+  const why = sec("why", "camera", "right", t.why_eb, t.h_why, `
 <figure class="person rv">${pic("portrait", t.alt_p, 1024, 1024)}<figcaption><b>${esc(t.name)}</b><small>${esc(t.role)}</small></figcaption></figure>
 <ul class="rows rows-s">${t.why.map((x, i) => `<li class="rv"><span class="mono">${nn(i)}</span><div><b>${esc(x)}</b></div></li>`).join("")}</ul>`);
 
@@ -120,11 +123,12 @@ ${list(D.formats[i].map(k => t.sc[k]), "ul-v")}
 <ul class="links rv">${links.map(l => `<li><span class="mono">${esc(l[0])}</span><a href="${esc(l[1])}"${/^http/.test(l[1]) ? ' target="_blank" rel="noopener me"' : ""} dir="ltr">${esc(l[2])}</a></li>`).join("")}</ul>
 <footer class="foot rv"><span>© 2026 AB Media</span><span>${esc(t.foot)}</span></footer>`);
 
-  const href = ["#work", "#how", "#formats", "#faq"];
+  const href = ["#problems", "#fix", "#work", "#faq"];
   return {
     t,
-    html: hero + diff + calcS + prob + fix + how + work + why + formats + faq + request + contact,
-    nav: t.nav3.map((x, i) => `<a href="${href[i]}">${esc(x)}</a>`).join(""),
+    /* sections are numbered in the order they appear, not the order they were built */
+    html: (() => { let k = 0; return (hero + prob + diff + calcS + fix + how + why + work + formats + faq + request + contact).replace(/(<div class="eb rv"><span>)\d+(<\/span>)/g, (m, x, y) => x + nn(k++) + y); })(),
+    nav: t.nav4.map((x, i) => `<a href="${href[i]}">${esc(x)}</a>`).join(""),
     bar: `${esc(t.bar.replace("5", String(D.offer_minutes)))} <b>${esc(D.bonus[lang])}</b>`
   };
 }

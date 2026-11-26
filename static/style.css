@@ -340,3 +340,13 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
   .fp-grid, .fp .films { grid-template-columns: 1fr; }
   .fp-cta { padding: 26px 22px; margin: 48px 0; }
 }
+
+/* ---------- golden circle: chapter tag in each label, Why / How / What map in the hero ---------- */
+.eb .ch { color: var(--acc); font-weight: 500; }
+.eb .ch::after { content: "·"; margin-inline-start: 14px; color: var(--dim); }
+.gc { list-style: none; margin-top: 34px; max-width: 52ch; border-top: 1px solid var(--line); }
+.gc li { border-bottom: 1px solid var(--line); }
+.gc a { display: grid; grid-template-columns: 92px 1fr; gap: 18px; align-items: baseline; padding: 14px 0; color: var(--muted); font-size: 15px; line-height: 1.5; transition: color .2s; }
+.gc a:hover { color: var(--text); }
+.gc b { color: var(--acc); }
+@media (max-width: 899px) { .gc a { grid-template-columns: 76px 1fr; gap: 12px; font-size: 14px; } }
