@@ -4,7 +4,7 @@
    - sitemap.xml (with hreflang and video entries), robots.txt, 404.html, llms.txt, site.webmanifest
    The site address is the one line below: after a move to its own domain, change it and run again. */
 "use strict";
-const SITE = "https://nuriddin001.github.io/abmedia-v3/";
+const SITE = "https://abmedia-film.github.io/";
 
 const fs = require("fs"), path = require("path");
 const here = (...p) => path.join(__dirname, ...p);
