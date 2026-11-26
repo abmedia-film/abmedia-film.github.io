@@ -158,16 +158,15 @@ document.addEventListener("click", e => {
   const f = e.target.closest("[data-format]"); if (f) { fmt = f.dataset.format; $("#f-format").value = fmt; }
 });
 
-/* ---------- offer bar: always on show; the countdown starts over when it runs out ---------- */
+/* ---------- offer bar: always on show; the countdown stops at 00:00 ---------- */
 (function () {
   const bar = $("#bar"), tm = $("#timer"), total = D.offer_minutes * 60;
   let start = +store.get("abm-offer", true); if (!start) { start = Date.now(); store.set("abm-offer", String(start), true); }
   bar.hidden = false; document.body.classList.add("has-bar");
   const step = () => {
-    let left = total - Math.floor((Date.now() - start) / 1000);
-    if (left <= 0) { start = Date.now(); store.set("abm-offer", String(start), true); left = total; }
+    const left = Math.max(0, total - Math.floor((Date.now() - start) / 1000));
     tm.textContent = String(Math.floor(left / 60)).padStart(2, "0") + ":" + String(left % 60).padStart(2, "0");
-    setTimeout(step, 1000);
+    if (left > 0) setTimeout(step, 1000);
   };
   step();
 })();
